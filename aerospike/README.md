@@ -14,6 +14,8 @@ WARNING:
 
 -->
 
+**Note:** this is the "per-architecture" repository for the `i386` builds of [the `aerospike` official image](https://hub.docker.com/_/aerospike) -- for more information, see ["Architectures other than amd64?" in the official images documentation](https://github.com/docker-library/official-images#architectures-other-than-amd64) and ["An image's source changed in Git, now what?" in the official images FAQ](https://github.com/docker-library/faq#an-images-source-changed-in-git-now-what).
+
 # Quick reference
 
 -	**Maintained by**:  
@@ -24,10 +26,9 @@ WARNING:
 
 # Supported tags and respective `Dockerfile` links
 
--	[`5.3.0.16`](https://github.com/aerospike/aerospike-server.docker/blob/c9e69ec4a5a3d079daa8948ad1e3dc33328b3870/Dockerfile)
--	[`5.4.0.11`](https://github.com/aerospike/aerospike-server.docker/blob/6a0955a11bac57cfdba9a80096e0fdf197419161/Dockerfile)
--	[`5.5.0.9`, `latest`](https://github.com/aerospike/aerospike-server.docker/blob/7be1159a1714b9a11ae4c24c134f0762b903eca9/Dockerfile)
--	[`ee-5.5.0.9`](https://github.com/aerospike/aerospike-server-enterprise.docker/blob/1f2f68dd54868659402d7f27cd26c4ec26dd964f/Dockerfile)
+**WARNING:** THIS IMAGE *IS NOT SUPPORTED* ON THE `i386` ARCHITECTURE
+
+[![i386/aerospike build status badge](https://img.shields.io/jenkins/s/https/doi-janky.infosiftr.net/job/multiarch/job/i386/job/aerospike.svg?label=i386/aerospike%20%20build%20job)](https://doi-janky.infosiftr.net/job/multiarch/job/i386/job/aerospike/)
 
 # Quick reference (cont.)
 
@@ -82,7 +83,7 @@ Anyone can [sign up](https://www.aerospike.com/lp/try-now/) to get an evaluation
 ### Running a node with a feature key file in a mapped directory
 
 ```console
-docker run -d -v DIR:/opt/aerospike/etc/ -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 aerospike:ee-[version]
+docker run -d -v DIR:/opt/aerospike/etc/ -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 i386/aerospike:ee-[version]
 ```
 
 Above, *DIR* is a directory on your machine where you drop your feature key file. Make sure Docker Desktop has file sharing permission to bind mount it into Docker containers.
@@ -91,7 +92,7 @@ Above, *DIR* is a directory on your machine where you drop your feature key file
 
 ```console
 FEATKEY=$(base64 ~/Desktop/evaluation-features.conf)
-docker run -d -e "FEATURES=$FEATKEY" -e "FEATURE_KEY_FILE=env-b64:FEATURES" --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 aerospike:ee-[version]
+docker run -d -e "FEATURES=$FEATKEY" -e "FEATURE_KEY_FILE=env-b64:FEATURES" --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 i386/aerospike:ee-[version]
 ```
 
 ## Advanced Configuration
@@ -107,7 +108,7 @@ You can inject parameters into the configuration template using container-side e
 For example, to set the default [namespace](https://www.aerospike.com/docs/architecture/data-model.html) name to *demo*:
 
 ```console
-docker run -d --name aerospike -e "NAMESPACE=demo" -p 3000:3000 -p 3001:3001 -p 3002:3002 -v /my/dir:/opt/aerospike/etc/ -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" aerospike:ee-[version]
+docker run -d --name aerospike -e "NAMESPACE=demo" -p 3000:3000 -p 3001:3001 -p 3002:3002 -v /my/dir:/opt/aerospike/etc/ -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" i386/aerospike:ee-[version]
 ```
 
 Injecting configuration parameters into the configuration template isn't compatible with using a custom configuration file. You can use one or the other.
@@ -142,7 +143,7 @@ You should first `-v` map a local directory, which Docker will bind mount. Next,
 For example:
 
 ```console
-docker run -d -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
+docker run -d -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 i386/aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
 ```
 
 ### Persistent Data Directory
@@ -152,7 +153,7 @@ With Docker, the files within the container are not persisted past the life of t
 For example:
 
 ```console
-docker run -d  -v /opt/aerospike/data:/opt/aerospike/data  -v /opt/aerospike/etc:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" aerospike:ee-[version]
+docker run -d  -v /opt/aerospike/data:/opt/aerospike/data  -v /opt/aerospike/etc:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -e "FEATURE_KEY_FILE=/opt/aerospike/etc/features.conf" i386/aerospike:ee-[version]
 ```
 
 The example above uses the configuration template, where the single defined namespace is in-memory with file-based persistence. Just mounting the predefined /opt/aerospike/data directory enables the data to be persisted on the host.
@@ -171,7 +172,7 @@ Alternatively, a custom configuration file is used with the parameter `file` set
 In this example we also mount the data directory in a similar way, using a custom configuration file.
 
 ```console
-docker run -d -v /opt/aerospike/data:/opt/aerospike/data -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
+docker run -d -v /opt/aerospike/data:/opt/aerospike/data -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 i386/aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
 ```
 
 ### Block Storage
@@ -191,7 +192,7 @@ Update the `storage-engine device` section of the namespace in the custom aerosp
 Now to map a host drive /dev/sdc to /dev/xvdc on a container
 
 ```console
-docker run -d --device '/dev/sdc:/dev/xvdc' -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
+docker run -d --device '/dev/sdc:/dev/xvdc' -v /opt/aerospike/etc/:/opt/aerospike/etc/ --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 i386/aerospike:ee-[version] --config-file /opt/aerospike/etc/aerospike.conf
 ```
 
 ### Persistent Lua Cache
@@ -199,7 +200,7 @@ docker run -d --device '/dev/sdc:/dev/xvdc' -v /opt/aerospike/etc/:/opt/aerospik
 Upon restart, your lua cache will become emptied. To persist the cache, you will want to mount a directory from the host to the container's `/opt/aerospike/usr/udf/lua` using the `-v` option:
 
 ```sh
-docker run -d -v /opt/aerospike/lua:/opt/aerospike/usr/udf/lua -v /opt/aerospike/data:/opt/aerospike/data --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -e "FEATURE_KEY_FILE=/opt/etc/aerospike/features.conf" aerospike:ee-[version]
+docker run -d -v /opt/aerospike/lua:/opt/aerospike/usr/udf/lua -v /opt/aerospike/data:/opt/aerospike/data --name aerospike -p 3000:3000 -p 3001:3001 -p 3002:3002 -e "FEATURE_KEY_FILE=/opt/etc/aerospike/features.conf" i386/aerospike:ee-[version]
 ```
 
 ## Clustering
